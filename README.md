@@ -7,7 +7,9 @@ C:\Program Files (x86)\Steam\steamapps\common\Baldurs Gate 3\Data
 
 You can use Norbyte's Extractor Tool to do that
 
-Once this is done, launch the executable, input the path f the uncompressed files and a destination folder
+Once this is done, launch the executable, input the path of the uncompressed files and a destination folder
 This will generate Armor.txt, Weapon.txt and Item.txt
-A TreasureTable.txt will also be generated with the content of the three preceeding files
 
+Items created through this app are their own distinct entities, duplicates of the base ones, and can be altered without any impact on the objects of the base game
+
+This utility also generates a TreasureTable.txt that can be used for a multitude of purposes, whether for merchants or containers
