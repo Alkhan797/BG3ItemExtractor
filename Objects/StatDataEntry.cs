@@ -6,26 +6,26 @@ using System.Threading.Tasks;
 
 namespace GetAllItemsBG3.Objects
 {
-    public class GameObject
+    public class StatDataEntry
     {
-        public string EntryName { get; protected set; }
+        public string Name { get; protected set; }
         public string Type { get; protected set; }
         public string UsingReference { get; protected set; }
         public Dictionary<string, string> Data { get; protected set; }
 
-        protected GameObject(
+        protected StatDataEntry(
             string name,
             string type,
             string usingReference,
             Dictionary<string, string> data)
         {
-            EntryName = name;
+            Name = name;
             Type = type;
             UsingReference = usingReference;
             Data = data;
         }
 
-        public static GameObject Create(string name, string type, string usingReference = null, Dictionary<string, string> data = null)
+        public static StatDataEntry Create(string name, string type, string usingReference = null, Dictionary<string, string> data = null)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -37,7 +37,7 @@ namespace GetAllItemsBG3.Objects
                 throw new Exception("GameObject must have a type");
             }
 
-            return new GameObject(name, type, usingReference, data ?? new Dictionary<string, string>());
+            return new StatDataEntry(name, type, usingReference, data ?? new Dictionary<string, string>());
         }
     }
 }

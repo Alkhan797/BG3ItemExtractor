@@ -12,7 +12,7 @@ namespace GetAllItemsBG3.Services
         private const string SharedStatsPath = "\\Shared\\Public\\Shared\\Stats\\Generated";
         private const string GustavStatsPath = "\\Gustav\\Public\\Gustav\\Stats\\Generated";
 
-        private static IEnumerable<GameObject> ProcessObjectFiles(string rootPath, string fileName)
+        private static IEnumerable<StatDataEntry> ProcessObjectFiles(string rootPath, string fileName)
         {
             var sharedObjects = FileService.GetObjectFileAsObjects($"{rootPath}{SharedStatsPath}{fileName}").ToList();
             var gustavObjects = FileService.GetObjectFileAsObjects($"{rootPath}{GustavStatsPath}{fileName}");
@@ -21,13 +21,13 @@ namespace GetAllItemsBG3.Services
 
             // Remove template and reference objects
             sharedObjects = sharedObjects.Where(a => 
-                !a.EntryName.StartsWith("_") && !a.EntryName.Contains("_REF"))
+                !a.Name.StartsWith("_") && !a.Name.Contains("_REF"))
                 .ToList();
 
             return sharedObjects;
         }
 
-        public static IDictionary<string, List<GameObject>> ProcessGameFiles(string rootPath, string outputPath)
+        public static IDictionary<string, List<StatDataEntry>> ProcessGameFiles(string rootPath, string outputPath)
         {
             var usableObjectTypes = new[]
             {
@@ -47,7 +47,7 @@ namespace GetAllItemsBG3.Services
             FileService.WriteModObjectFile($"{outputPath}\\Weapon.txt", weapons);
             FileService.WriteModObjectFile($"{outputPath}\\Object.txt", items);
 
-            var objectDictionary = new Dictionary<string, List<GameObject>>
+            var objectDictionary = new Dictionary<string, List<StatDataEntry>>
             {
                 {"ALL_ARMORS", armors},
                 {"ALL_WEAPONS", weapons},
@@ -57,7 +57,7 @@ namespace GetAllItemsBG3.Services
             return objectDictionary;
         }
 
-        public static void GenerateTreasureTable(string outputPath, IDictionary<string, List<GameObject>> objects, IDictionary<string, int> quantities)
+        public static void GenerateTreasureTable(string outputPath, IDictionary<string, List<StatDataEntry>> objects, IDictionary<string, int> quantities)
         {
             if (!objects.Keys.All(quantities.ContainsKey))
             {

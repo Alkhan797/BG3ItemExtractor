@@ -19,9 +19,9 @@ namespace GetAllItemsBG3.Objects
             ItemQuantity = itemQuantity;
         }
 
-        public static TreasureTable Create(string name, IEnumerable<GameObject> objects, int itemQuantity = 1)
+        public static TreasureTable Create(string name, IEnumerable<StatDataEntry> objects, int itemQuantity = 1)
         {
-            var objectCategories = objects.Select(o => $"I_MOD_{o.EntryName}");
+            var objectCategories = objects.Select(o => $"I_MOD_{o.Name}");
             return new TreasureTable(name, objectCategories, itemQuantity);
         }
     }

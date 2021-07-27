@@ -24,7 +24,7 @@ namespace GetAllItemsBG3.Services
             return fileLines.Count;
         }
 
-        private static GameObject ReadBaldursGateObjectEntry(IReadOnlyList<string> entry)
+        private static StatDataEntry ReadBaldursGateObjectEntry(IReadOnlyList<string> entry)
         {
             var quoteContents = new Regex("(?<= \\\")(.*?)(?=\\s*\\\")");
 
@@ -34,7 +34,7 @@ namespace GetAllItemsBG3.Services
             var usingLine = entry.FirstOrDefault(line => line.Contains("using "));
             var usingReference = usingLine != null ? quoteContents.Match(usingLine).Value : null;
 
-            var bgObject = GameObject.Create(name, type, usingReference);
+            var bgObject = StatDataEntry.Create(name, type, usingReference);
 
             var dataLines = entry.Where(line => line.Contains("data "));
             foreach (var data in dataLines)
@@ -49,9 +49,9 @@ namespace GetAllItemsBG3.Services
 
         #endregion
 
-        public static IEnumerable<GameObject> GetObjectFileAsObjects(string inputPath)
+        public static IEnumerable<StatDataEntry> GetObjectFileAsObjects(string inputPath)
         {
-            var objectList = new List<GameObject>();
+            var objectList = new List<StatDataEntry>();
             var fileLines = File.ReadAllLines(inputPath);
 
             for (var i = 0; i < fileLines.Length; i++)
@@ -76,14 +76,14 @@ namespace GetAllItemsBG3.Services
             return objectList;
         }
 
-        public static void WriteModObjectFile(string outputPath, IEnumerable<GameObject> bgObjects)
+        public static void WriteModObjectFile(string outputPath, IEnumerable<StatDataEntry> bgObjects)
         {
             using StreamWriter file = new(outputPath);
             foreach (var bgObject in bgObjects.Where(o => o.Data.Count > 0))
             {
-                var objectAsString = $"new entry \"MOD_{bgObject.EntryName}\"\n";
+                var objectAsString = $"new entry \"MOD_{bgObject.Name}\"\n";
                 objectAsString += $"type \"{bgObject.Type}\"\n";
-                objectAsString += $"using \"{bgObject.EntryName}\"\n";
+                objectAsString += $"using \"{bgObject.Name}\"\n";
                 objectAsString += $"data \"RootTemplate \"{Guid.NewGuid()}\"\n";
                 objectAsString += "data \"MinLevel\" \"1\"\n";
 
