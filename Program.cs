@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using GetAllItemsBG3.Services;
+using GetAllItemsBG3.Services.Dto;
 
 namespace GetAllItemsBG3
 {
@@ -13,17 +14,8 @@ namespace GetAllItemsBG3
             Console.WriteLine("Enter unpacked BG3 data root directory");
             var gameDirectoryPath = Console.ReadLine()?.Trim();
 
-            Console.WriteLine("Enter Mod Data file directory");
+            Console.WriteLine("Enter Mod Stats/Generated directory");
             var modDirectoryPath = Console.ReadLine()?.Trim();
-
-            Console.WriteLine("Enter Size of the Armor stacks");
-            int.TryParse(Console.ReadLine()?.Trim(), out var armorQuantity);
-
-            Console.WriteLine("Enter Size of the Weapon stacks");
-            int.TryParse(Console.ReadLine()?.Trim(), out var weaponQuantity);
-
-            Console.WriteLine("Enter Size of the Item stacks");
-            int.TryParse(Console.ReadLine()?.Trim(), out var itemQuantity);
 
             if (string.IsNullOrWhiteSpace(gameDirectoryPath) || string.IsNullOrWhiteSpace(modDirectoryPath))
             {
@@ -32,15 +24,37 @@ namespace GetAllItemsBG3
                 Console.ReadKey(true);
             }
 
-            var quantities = new Dictionary<string, int>
+            var typeSelectors = new List<EntryTypeSelector>
             {
-                {"ALL_ARMORS", armorQuantity > 0 ? armorQuantity : 1},
-                {"ALL_WEAPONS", weaponQuantity > 0 ? weaponQuantity : 1},
-                {"ALL_ITEMS", itemQuantity > 0 ? itemQuantity : 1}
+                new("Armor"),
+                new("Weapon"),
+                new("Object", new[] {"_MagicScroll", "_Poison",
+                    "_Grenade", "_Potion", "_Arrow", "_Kit",
+                    "_Potion_Of_Resistance" }),
+                //new("Passive"),
+                //new("Status_BOOST")
             };
 
-            var gameObjects = GameObjectService.ProcessGameFiles(gameDirectoryPath, modDirectoryPath);
-            GameObjectService.GenerateTreasureTable(modDirectoryPath, gameObjects, quantities);
+            var entriesByType = StatObjectService.ProcessStatsEntries(gameDirectoryPath);
+
+            if (!Directory.Exists($"{modDirectoryPath}\\Data"))
+            {
+                Directory.CreateDirectory($"{modDirectoryPath}\\Data");
+            }
+            foreach (var (type, entries) in entriesByType)
+            {
+                FileService.WriteModStatFile($"{modDirectoryPath}\\Data\\{type}.txt", entries);
+            }
+
+            var stackSizes = new Dictionary<string, int>();
+            foreach (var entryType in StatObjectService.LootTypes)
+            {
+                Console.WriteLine($"Enter Size of the {entryType} stacks");
+                int.TryParse(Console.ReadLine()?.Trim(), out var quantity);
+                stackSizes.Add(entryType, quantity > 0 ? quantity : 1);
+            }
+
+            StatObjectService.GenerateTreasureTable(modDirectoryPath, entriesByType, stackSizes);
 
             Console.Write($"{Environment.NewLine}Press any key to exit...");
             Console.ReadKey(true);
