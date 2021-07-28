@@ -9,8 +9,8 @@ namespace GetAllItemsBG3.Services
 {
     public class StatObjectService
     {
-        private const string SharedStatsPath = "\\Shared\\Public\\Shared\\Stats\\Generated";
-        private const string GustavStatsPath = "\\Gustav\\Public\\Gustav\\Stats\\Generated";
+        public const string SharedStatsPath = "\\Shared\\Public\\Shared\\Stats\\Generated";
+        public const string GustavStatsPath = "\\Gustav\\Public\\Gustav\\Stats\\Generated";
         public static string[] LootTypes = { "Armor", "Weapon", "Object" };
 
         public static IEnumerable<StatDataEntry> ProcessStatsDataEntryFolder(string compiledPath, ICollection<string> fileTypeFilter = null)
@@ -33,8 +33,9 @@ namespace GetAllItemsBG3.Services
 
         public static IDictionary<string, List<StatDataEntry>> ProcessStatsEntries(string rootPath, List<EntryTypeSelector> typeSelectors = null)
         {
-            var compiledEntries = ProcessStatsDataEntryFolder($"{rootPath}{SharedStatsPath}", typeSelectors?.Select(t => t.FileTypeName).ToList()).ToList();
-            compiledEntries.AddRange(ProcessStatsDataEntryFolder($"{rootPath}{GustavStatsPath}", typeSelectors?.Select(t => t.FileTypeName).ToList()));
+            var filesToProcess = typeSelectors?.Select(t => t.FileTypeName).ToList();
+            var compiledEntries = ProcessStatsDataEntryFolder($"{rootPath}{SharedStatsPath}", filesToProcess).ToList();
+            compiledEntries.AddRange(ProcessStatsDataEntryFolder($"{rootPath}{GustavStatsPath}", filesToProcess));
 
             var entriesByFileType = new Dictionary<string, List<StatDataEntry>>();
             
@@ -60,6 +61,15 @@ namespace GetAllItemsBG3.Services
             }
 
             return entriesByFileType;
+        }
+
+        public static List<StatDataEntry> FilterEntrySubtypes(List<StatDataEntry> entries, string[] subTypeWhiteList, bool? includeTemplates, bool? includeReferences)
+        {
+            return entries.Where(e =>
+                (subTypeWhiteList == null || subTypeWhiteList.Contains(e.UsingReference)) &&
+                (includeReferences == null || e.IsReference() == includeReferences) &&
+                (includeTemplates == null || e.IsTemplate() == includeTemplates)
+            ).ToList();
         }
 
         public static void GenerateTreasureTable(string outputPath, IDictionary<string, List<StatDataEntry>> entriesByType, IDictionary<string, int> quantities)

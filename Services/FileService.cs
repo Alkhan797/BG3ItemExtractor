@@ -51,6 +51,13 @@ namespace GetAllItemsBG3.Services
 
         public static IEnumerable<StatDataEntry> ReadFileDataEntries(string inputPath)
         {
+            if (!File.Exists(inputPath))
+            {
+                var message = $"Attempted to parse an non-existent file : {inputPath}";
+                Console.WriteLine(message);
+                throw new Exception(message);
+            }
+
             var objectList = new List<StatDataEntry>();
             var fileLines = File.ReadAllLines(inputPath);
 
