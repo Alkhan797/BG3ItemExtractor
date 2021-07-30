@@ -113,10 +113,10 @@ namespace GetAllItemsBG3.Services
             {
                 file.WriteLine($"new treasuretable \"{table.Name}\"");
 
-                foreach (var objectCategory in table.Objects)
+                foreach (var lootObject in table.Objects)
                 {
                     file.WriteLine($"new subtable \"{table.ItemQuantity},1\"");
-                    file.WriteLine($"object category \"{objectCategory}\",1,0,0,0,0,0,0,0");
+                    file.WriteLine($"object category \"{lootObject}\",1,0,0,0,0,0,0,0");
                 }
 
                 file.WriteLine("\n");

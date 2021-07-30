@@ -40,7 +40,7 @@ namespace GetAllItemsBG3.GameObjects
             return new StatDataEntry(name, type, sourceFile, usingReference, data ?? new Dictionary<string, string>());
         }
 
-        public bool IsTemplate()
+        public bool IsBase()
         {
             return Name.StartsWith("_");
         }

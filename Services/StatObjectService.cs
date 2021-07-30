@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using GetAllItemsBG3.GameObjects;
@@ -54,8 +53,8 @@ namespace GetAllItemsBG3.Services
                         .Where(e =>
                             e.SourceFile == typeSelector.FileTypeName &&
                             (typeSelector.SubTypeWhiteList == null || typeSelector.SubTypeWhiteList.Contains(e.UsingReference)) &&
-                            (typeSelector.IncludeReferences == null || e.IsReference() == typeSelector.IncludeReferences) &&
-                            (typeSelector.IncludeTemplates == null || e.IsTemplate() == typeSelector.IncludeTemplates)
+                            (typeSelector.UseReferences == null || e.IsReference() == typeSelector.UseReferences) &&
+                            (typeSelector.UseBase == null || e.IsBase() == typeSelector.UseBase)
                             ).ToList());
                 }
             }
@@ -63,12 +62,12 @@ namespace GetAllItemsBG3.Services
             return entriesByFileType;
         }
 
-        public static List<StatDataEntry> FilterEntrySubtypes(List<StatDataEntry> entries, string[] subTypeWhiteList, bool? includeTemplates, bool? includeReferences)
+        public static List<StatDataEntry> FilterEntrySubtypes(List<StatDataEntry> entries, string[] subTypeWhiteList, bool? includeTemplates = null, bool? includeReferences = null)
         {
             return entries.Where(e =>
                 (subTypeWhiteList == null || subTypeWhiteList.Contains(e.UsingReference)) &&
                 (includeReferences == null || e.IsReference() == includeReferences) &&
-                (includeTemplates == null || e.IsTemplate() == includeTemplates)
+                (includeTemplates == null || e.IsBase() == includeTemplates)
             ).ToList();
         }
 
