@@ -112,15 +112,16 @@ namespace StatDataLibrary.Services
         /// </summary>
         /// <param name="entriesByType"></param>
         /// <param name="quantities"></param>
+        /// <param name="modName">The name of your mod</param>
         /// <returns>The generated list of treasure tables</returns>
-        public static List<TreasureTable> GenerateTreasureTable(IDictionary<string, List<StatDataEntry>> entriesByType, IDictionary<string, int> quantities)
+        public static List<TreasureTable> GenerateTreasureTable(IDictionary<string, List<StatDataEntry>> entriesByType, IDictionary<string, int> quantities, string modName = null)
         {
             var lootEntries = entriesByType.Where(e => LootTypes.Contains(e.Key));
 
             var tables = new List<TreasureTable>();
             foreach (var (type, entries) in lootEntries)
             {
-                tables.Add(TreasureTable.Create($"ALL_{type.ToUpper()}S", entries, quantities[type]));
+                tables.Add(TreasureTable.Create($"ALL_{type.ToUpper()}S", entries, quantities[type], modName));
             }
 
             return tables;

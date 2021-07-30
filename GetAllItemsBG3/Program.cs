@@ -169,6 +169,8 @@ namespace GetAllItemsBG3
                 Console.ReadKey(true);
             }
 
+            var modName = Path.GetFileNameWithoutExtension(modDirectoryPath);
+
             var typeSelectors = new List<EntryTypeSelector>{
                 new("Armor", useBases:false, useReferences:false),
                 new("Weapon", useBases:false, useReferences:false),
@@ -184,6 +186,7 @@ namespace GetAllItemsBG3
             };
 
             var answers = new[] {"yes", "y", "no", "n"};
+            var modStatsOutput = $"{modDirectoryPath}\\Public\\{modName}\\Stats\\Generated";
 
             Console.WriteLine("Use duplication preset extraction data (Armor/Weapon/Useable Objects) ? (y/n) :");
             var usePreset = "";
@@ -211,13 +214,13 @@ namespace GetAllItemsBG3
                 BrowseType(entriesByType);
             }
 
-            if (!Directory.Exists($"{modDirectoryPath}\\DataFields"))
+            if (!Directory.Exists($"{modStatsOutput}\\Data"))
             {
-                Directory.CreateDirectory($"{modDirectoryPath}\\DataFields");
+                Directory.CreateDirectory($"{modStatsOutput}\\Data");
             }
             foreach (var (type, entries) in entriesByType)
             {
-                StatsFileService.WriteModStatFile($"{modDirectoryPath}\\DataFields\\{type}.txt", entries);
+                StatsFileService.WriteModStatFile($"{modStatsOutput}\\Data\\{type}.txt", entries, modName);
             }
 
             var currentLootTypes = entriesByType.Keys.Where(t => StatObjectService.LootTypes.Contains(t)).ToArray();
@@ -235,8 +238,8 @@ namespace GetAllItemsBG3
                     stackSizes.Add(entryType, quantity > 0 ? quantity : 1);
                 }
 
-                var tables = StatObjectService.GenerateTreasureTable(entriesByType, stackSizes);
-                StatsFileService.WriteTreasureTable(modDirectoryPath, tables);
+                var tables = StatObjectService.GenerateTreasureTable(entriesByType, stackSizes, modName);
+                StatsFileService.WriteTreasureTable($"{modStatsOutput}", tables);
             }
             
 
