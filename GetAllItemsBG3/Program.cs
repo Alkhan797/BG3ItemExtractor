@@ -10,6 +10,23 @@ namespace GetAllItemsBG3
 {
     internal class Program
     {
+        #region Misc Methods
+
+        private static string FormatChoiceList(IReadOnlyList<string> choices)
+        {
+            var formattedString = "";
+            for (var i = 0; i < choices.Count; i++)
+            {
+                formattedString += (i > 3 && i % 4 == 0) ? $"{choices[i]}\n" : $"{choices[i]}\t";
+            }
+
+            return formattedString + "\n";
+        }
+
+        #endregion
+
+        #region File Selection
+
         private static List<EntryTypeSelector> SelectFiles(string gameDirectoryPath)
         {
             var typeSelectors = new List<EntryTypeSelector>();
@@ -56,16 +73,9 @@ namespace GetAllItemsBG3
             return typeSelectors;
         }
 
-        private static string FormatChoiceList(IReadOnlyList<string> choices)
-        {
-            var formattedString = "";
-            for (var i = 0; i < choices.Count; i++)
-            {
-                formattedString += (i> 3 && i % 4 == 0) ? $"{choices[i]}\n" : $"{choices[i]}\t";
-            }
+        #endregion
 
-            return formattedString + "\n";
-        }
+        #region Type Selection
 
         private static void BrowseType(IDictionary<string, List<StatDataEntry>> entriesByType)
         {
@@ -104,6 +114,10 @@ namespace GetAllItemsBG3
                 entriesByType[type] = categories.SelectMany(c => c.Value).ToList();
             }
         }
+
+        #endregion
+
+        #region Category Selection
 
         private static void BrowseCategories(IDictionary<string, List<StatDataEntry>> entriesByCategories, string type)
         {
@@ -154,6 +168,8 @@ namespace GetAllItemsBG3
             }
         }
 
+        #endregion
+
         private static void Main(string[] args)
         {
             Console.WriteLine("Enter unpacked BG3 data root directory");
@@ -171,7 +187,7 @@ namespace GetAllItemsBG3
 
             var modName = Path.GetFileNameWithoutExtension(modDirectoryPath);
 
-            var typeSelectors = new List<EntryTypeSelector>{
+            var presetSelectors = new List<EntryTypeSelector>{
                 new("Armor", useBases:false, useReferences:false),
                 new("Weapon", useBases:false, useReferences:false),
                 new("Object", new[] {"_MagicScroll", "_Poison",
@@ -180,35 +196,37 @@ namespace GetAllItemsBG3
             };
 
             var baseSelectors = new List<EntryTypeSelector>{
-                new("Armor", useBases:true, useReferences:false),
-                new("Weapon", useBases:true, useReferences:false),
-                new("Object", useBases:true, useReferences:false)
+                new("Armor", useBases:true),
+                new("Weapon", useBases:true),
+                new("Object", useBases:true)
             };
 
+            var usePreset = "";
+            var useBasePreset = "";
             var answers = new[] {"yes", "y", "no", "n"};
             var modStatsOutput = $"{modDirectoryPath}\\Public\\{modName}\\Stats\\Generated";
 
-            Console.WriteLine("Use duplication preset extraction data (Armor/Weapon/Useable Objects) ? (y/n) :");
-            var usePreset = "";
-            var useBasePreset = "";
-            while (!answers.Contains(usePreset))
+            
+            Console.WriteLine("Use base preset extraction data (For from scratch creation purposes only) ? (y/n) :");
+            while (!answers.Contains(useBasePreset))
             {
-                usePreset = Console.ReadLine()?.Trim().ToLower();
+                useBasePreset = Console.ReadLine()?.Trim().ToLower();
             }
 
-            if (usePreset is "no" or "n")
+            if (useBasePreset is "no" or "n")
             {
-                Console.WriteLine("Use base preset extraction data (For from scratch creation purposes only) ? (y/n) :");
-                while (!answers.Contains(useBasePreset))
+                Console.WriteLine("Use duplication preset extraction data (Armor/Weapon/Useable Objects) ? (y/n) :");
+                while (!answers.Contains(usePreset))
                 {
-                    useBasePreset = Console.ReadLine()?.Trim().ToLower();
+                    usePreset = Console.ReadLine()?.Trim().ToLower();
                 }
 
-                typeSelectors = useBasePreset is "no" or "n" ? SelectFiles(gameDirectoryPath) : baseSelectors;
+                baseSelectors = usePreset is "no" or "n" ? SelectFiles(gameDirectoryPath) : presetSelectors;
             }
 
-            var entriesByType = StatObjectService.ProcessStatsEntries(gameDirectoryPath, typeSelectors);
+            var entriesByType = StatObjectService.ProcessStatsEntries(gameDirectoryPath, baseSelectors);
 
+            // Manual selection mode
             if (usePreset is "no" or "n" && useBasePreset is "no" or "n")
             {
                 BrowseType(entriesByType);
