@@ -16,10 +16,10 @@ namespace GetAllItemsBG3
             var answers = new[] { "yes", "y", "no", "n" };
 
             // Files without entries
-            var entryFileBlackList = new[] { "BloodTypes", "Data", "ItemColor", "ItemProgressionNames", "ItemProgressionVisuals", "XPData" };
+            var entryFileBlackList = new[] { "BloodTypes", "DataFields", "ItemColor", "ItemProgressionNames", "ItemProgressionVisuals", "XPData" };
 
             var validFolderFileList = Directory
-                .EnumerateFiles($"{gameDirectoryPath}{StatObjectService.SharedStatsPath}\\Data", "*.txt")
+                .EnumerateFiles($"{gameDirectoryPath}{StatObjectService.SharedStatsPath}\\DataFields", "*.txt")
                 .Where(fileName => !entryFileBlackList.Contains(Path.GetFileNameWithoutExtension(fileName)))
                 .Select(Path.GetFileNameWithoutExtension)
                 .ToList();
@@ -170,17 +170,17 @@ namespace GetAllItemsBG3
             }
 
             var typeSelectors = new List<EntryTypeSelector>{
-                new("Armor", useBase:false, useReferences:false),
-                new("Weapon", useBase:false, useReferences:false),
+                new("Armor", useBases:false, useReferences:false),
+                new("Weapon", useBases:false, useReferences:false),
                 new("Object", new[] {"_MagicScroll", "_Poison",
                     "_Grenade", "_Potion", "_Arrow", "_Kit",
                     "_Potion_Of_Resistance" }, false, false)
             };
 
             var baseSelectors = new List<EntryTypeSelector>{
-                new("Armor", useBase:true, useReferences:false),
-                new("Weapon", useBase:true, useReferences:false),
-                new("Object", useBase:true, useReferences:false)
+                new("Armor", useBases:true, useReferences:false),
+                new("Weapon", useBases:true, useReferences:false),
+                new("Object", useBases:true, useReferences:false)
             };
 
             var answers = new[] {"yes", "y", "no", "n"};
@@ -211,13 +211,13 @@ namespace GetAllItemsBG3
                 BrowseType(entriesByType);
             }
 
-            if (!Directory.Exists($"{modDirectoryPath}\\Data"))
+            if (!Directory.Exists($"{modDirectoryPath}\\DataFields"))
             {
-                Directory.CreateDirectory($"{modDirectoryPath}\\Data");
+                Directory.CreateDirectory($"{modDirectoryPath}\\DataFields");
             }
             foreach (var (type, entries) in entriesByType)
             {
-                FileService.WriteModStatFile($"{modDirectoryPath}\\Data\\{type}.txt", entries);
+                StatsFileService.WriteModStatFile($"{modDirectoryPath}\\DataFields\\{type}.txt", entries);
             }
 
             var currentLootTypes = entriesByType.Keys.Where(t => StatObjectService.LootTypes.Contains(t)).ToArray();
@@ -235,7 +235,8 @@ namespace GetAllItemsBG3
                     stackSizes.Add(entryType, quantity > 0 ? quantity : 1);
                 }
 
-                StatObjectService.GenerateTreasureTable(modDirectoryPath, entriesByType, stackSizes);
+                var tables = StatObjectService.GenerateTreasureTable(entriesByType, stackSizes);
+                StatsFileService.WriteTreasureTable(modDirectoryPath, tables);
             }
             
 
