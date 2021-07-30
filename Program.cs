@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using GetAllItemsBG3.GameObjects;
-using GetAllItemsBG3.Services;
-using GetAllItemsBG3.Services.Dto;
+using StatDataLibrary.GameObjects;
+using StatDataLibrary.Services;
+using StatDataLibrary.Services.Dto;
 
 namespace GetAllItemsBG3
 {

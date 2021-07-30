@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31515.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetAllItemsBG3", "GetAllItemsBG3.csproj", "{C2BC4BD5-6B7B-4EE9-9C15-AA71F3D58DB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GetAllItemsBG3", "GetAllItemsBG3.csproj", "{C2BC4BD5-6B7B-4EE9-9C15-AA71F3D58DB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatDataLibrary", "..\StatDataLibrary\StatDataLibrary.csproj", "{3E7D5925-6C22-40C7-9119-BB16185703DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{C2BC4BD5-6B7B-4EE9-9C15-AA71F3D58DB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2BC4BD5-6B7B-4EE9-9C15-AA71F3D58DB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2BC4BD5-6B7B-4EE9-9C15-AA71F3D58DB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E7D5925-6C22-40C7-9119-BB16185703DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E7D5925-6C22-40C7-9119-BB16185703DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E7D5925-6C22-40C7-9119-BB16185703DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E7D5925-6C22-40C7-9119-BB16185703DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
