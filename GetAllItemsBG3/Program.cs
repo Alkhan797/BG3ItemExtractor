@@ -175,7 +175,7 @@ namespace GetAllItemsBG3
             Console.WriteLine("Enter unpacked BG3 data root directory");
             var gameDirectoryPath = Console.ReadLine()?.Trim();
 
-            Console.WriteLine("Enter Mod Stats/Generated directory");
+            Console.WriteLine("Enter Mod root directory");
             var modDirectoryPath = Console.ReadLine()?.Trim();
 
             if (string.IsNullOrWhiteSpace(gameDirectoryPath) || string.IsNullOrWhiteSpace(modDirectoryPath))
@@ -207,7 +207,7 @@ namespace GetAllItemsBG3
             var modStatsOutput = $"{modDirectoryPath}\\Public\\{modName}\\Stats\\Generated";
 
             
-            Console.WriteLine("Use base preset extraction data (For from scratch creation purposes only) ? (y/n) :");
+            Console.WriteLine("Use base item (WARNING ! For from scratch creation purposes only !) ? (y/n) :");
             while (!answers.Contains(useBasePreset))
             {
                 useBasePreset = Console.ReadLine()?.Trim().ToLower();
@@ -215,7 +215,7 @@ namespace GetAllItemsBG3
 
             if (useBasePreset is "no" or "n")
             {
-                Console.WriteLine("Use duplication preset extraction data (Armor/Weapon/Useable Objects) ? (y/n) :");
+                Console.WriteLine("Use duplication preset (Armor/Weapon/Useable Objects) ? (y/n) :");
                 while (!answers.Contains(usePreset))
                 {
                     usePreset = Console.ReadLine()?.Trim().ToLower();

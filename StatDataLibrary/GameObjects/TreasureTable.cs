@@ -39,10 +39,9 @@ namespace StatDataLibrary.GameObjects
         /// <param name="itemQuantity">Generic quantity of every item in the treasure/loot table</param>
         /// <param name="modName">The name of your mod</param>
         /// <returns>A treasure/loot table populated with a given entry list</returns>
-        public static TreasureTable Create(string name, IEnumerable<StatDataEntry> objects, int itemQuantity = 1, string modName = null)
+        public static TreasureTable Create(string name, IEnumerable<StatDataEntry> objects, string modName, int itemQuantity = 1)
         {
-            modName ??= "MOD";
-            var objectCategories = objects.Select(o => o.IsBase() ? $"I_{modName}_[PLACEHOLDER{o.Name}]" : $"I_MOD_{o.Name}");
+            var objectCategories = objects.Select(o => o.IsBase() ? $"I_{modName}_[PLACEHOLDER{o.Name}]" : $"I_{modName}_{o.Name}");
             return new TreasureTable(name, objectCategories, itemQuantity);
         }
     }
